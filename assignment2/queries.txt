@@ -1,0 +1,97 @@
+1/ Select:
+SELECT * FROM Frequency f
+WHERE f.docid = "10389_txt_earn"
+
+2/Select & project:
+SELECT term FROM Frequency f
+WHERE f.docid = "10398_txt_earn"
+AND f.count=1
+
+3/Union:
+SELECT term FROM Frequency f
+WHERE f.docid = "10398_txt_earn"
+AND f.count=1
+UNION
+SELECT term FROM Frequency f
+WHERE f.docid = "925_txt_trade"
+AND f.count=1
+
+4/Count:
+
+SELECT COUNT(DISTINCT docid) FROM Frequency f
+WHERE f.term = "parliament"
+
+More general: search for terms that CONTAINS the word "parliament":
+
+SELECT COUNT(DISTINCT docid) FROM Frequency f
+WHERE f.term LIKE "%parliament%" 
+
+5/ Big documents:
+
+SELECT DISTINCT docid FROM Frequency
+GROUP BY docid
+HAVING SUM(count)>300
+
+6/ Two worlds:
+
+SELECT a.row_num, b.col_num, SUM(a.value*b.value)
+FROM a 
+INNER JOIN b
+ON b.col_num=3
+AND a.row_num=2
+WHERE a.col_num = b.row_num
+GROUP BY a.row_num, b.col_num
+
+If skip inner join => Multiply entire matrices:
+
+SELECT f1.docid, f1.term, f2.docid, f2.term FROM Frequency f1
+INNER JOIN Frequency f2
+ON f1.docid = f2.docid
+WHERE f1.term = "world"
+AND f2.term = "transactions"
+
+7/ Matrix multiplication:
+
+SELECT a.row_num, b.col_num, SUM(a.value*b.value)
+FROM a,b
+WHERE a.col_num = b.row_num
+GROUP BY a.row_num, b.col_num
+
+8/ Similarity matrix:
+
+SELECT a.docid, b.docid, SUM(a.count*b.count)
+FROM Frequency a
+INNER JOIN Frequency b
+ON a.docid="10080_txt_crude"
+AND b.docid="17035_txt_earn"
+WHERE a.term = b.term
+GROUP BY a.docid, b.docid
+
+Similarly, can multiply the whole matrices, but very slow:
+
+SELECT a.docid, b.docid, SUM(a.count*b.count)
+FROM Frequency a, Frequency b
+WHERE a.term = b.term
+GROUP BY a.docid, b.docid
+
+9/ Keyword search:
+
+First, create a new View (a virtual table to store the original term frequency matrix plus the query terms:
+
+CREATE VIEW qDoc AS
+SELECT * FROM frequency
+UNION
+SELECT 'q' as docid, 'washington' as term, 1 as count 
+UNION
+SELECT 'q' as docid, 'taxes' as term, 1 as count
+UNION 
+SELECT 'q' as docid, 'treasury' as term, 1 as count
+
+Then reuse similarity matrix, filtered by the query only:
+
+SELECT a.docid, b.docid, SUM(a.count*b.count)
+FROM qDoc a
+INNER JOIN qDoc b
+ON b.docid="q"
+WHERE a.term = b.term
+GROUP BY a.docid, b.docid
