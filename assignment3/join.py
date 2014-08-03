@@ -2,7 +2,7 @@ import MapReduce
 import sys
 
 """
-Word Count Example in the Simple Python MapReduce Framework
+Relational join
 """
 
 mr = MapReduce.MapReduce()

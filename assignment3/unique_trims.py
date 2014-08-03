@@ -2,7 +2,7 @@ import MapReduce
 import sys
 
 """
-Word Count Example in the Simple Python MapReduce Framework
+Trim DNA sequences and return unique ones
 """
 
 mr = MapReduce.MapReduce()

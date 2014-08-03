@@ -2,7 +2,7 @@ import MapReduce
 import sys
 
 """
-Word Count Example in the Simple Python MapReduce Framework
+Count number of friends
 """
 
 mr = MapReduce.MapReduce()

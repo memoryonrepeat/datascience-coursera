@@ -3,7 +3,7 @@ import collections
 import sys
 
 """
-Word Count Example in the Simple Python MapReduce Framework
+Count asymmetric friendships
 """
 
 mr = MapReduce.MapReduce()

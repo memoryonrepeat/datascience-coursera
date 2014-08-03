@@ -2,7 +2,7 @@ import MapReduce
 import sys
 
 """
-Word Count Example in the Simple Python MapReduce Framework
+Build inverted indexes
 """
 
 mr = MapReduce.MapReduce()
