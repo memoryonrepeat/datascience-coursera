@@ -13,6 +13,8 @@ class MapReduce:
         self.result.append(value) 
 
     def execute(self, data, mapper, reducer):
+        to_write = ''
+
         for line in data:
             record = json.loads(line)
             mapper(record)
@@ -22,5 +24,6 @@ class MapReduce:
 
         #jenc = json.JSONEncoder(encoding='latin-1')
         jenc = json.JSONEncoder()
-        for item in self.result:
-            print jenc.encode(item)
+        for item in self.result:            
+            to_write += jenc.encode(item) + '\n'
+        return to_write
